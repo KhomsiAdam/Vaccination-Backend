@@ -5,7 +5,7 @@ const express = require('express');
 const router = express.Router();
 
 // Middlewares
-const { auth } = require('../middlewares');
+// const { auth } = require('../middlewares');
 
 // Controllers
 const { userController } = require('../controllers');
@@ -13,34 +13,32 @@ const { userController } = require('../controllers');
 
 //create User
 router.post(
-  '/user/new',
+  '/new',
   userController.register,
 );
 // Get Users
 router.get(
-  '/users',
-  auth.isAuth('Admin'),
+  '/all',
   userController.get,
 );
 
-// Get User
+// Get Users
 router.get(
-  '/user/:id',
-  auth.isAuth('Admin'),
-  userController.getOne,
-);
+    '/vaccinVerify',
+    userController.vaccinVerify,
+  );
+
 
 // Update User
 router.patch(
   '/user/:id',
-  auth.isAuth('Admin'),
+//   auth.isAuth('Admin'),
   userController.updateOne,
 );
 
 // Delete User
 router.delete(
   '/user/:id',
-  auth.isAuth('Admin'),
   userController.deleteOne,
 );
 
