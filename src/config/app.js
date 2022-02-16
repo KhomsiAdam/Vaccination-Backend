@@ -1,3 +1,5 @@
+/*eslint-disable*/
+
 // Setup the global Winston logger
 global.__log = require('../helpers/logger');
 
@@ -33,7 +35,8 @@ const LoginError = 'Unable to login.';
 const registerError = 'User already exists with this email.';
 
 // Routes
-const { adminRoutes } = require('../routes');
+const { userRoutes, adminRoutes } = require('../routes');
+
 
 // Middlewares (use)
 app.use(cors({
@@ -85,6 +88,8 @@ app.get(
 // Endpoints
 app.use('/admin', adminRoutes);
 
+// Endpoints
+app.use('/user', userRoutes);
 // Error Handling
 app.use(notFound);
 app.use(errorHandler);

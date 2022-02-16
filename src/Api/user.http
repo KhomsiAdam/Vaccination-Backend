@@ -1,0 +1,6 @@
+@API_URL = "http://localhost:3000"
+
+GET {{API_URL}}/user/
+
+
+POST {{API_URL}}/user/new

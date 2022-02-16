@@ -1,10 +1,15 @@
+/* eslint-disable*/
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const Role = mongoose.Schema({
+const Role = new Schema({
   email: {
     type: String,
-    required: true,
+    trim: true,
+    lowercase: true,
     unique: true,
+    required: true ,
+    match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
   },
   role: {
     type: String,

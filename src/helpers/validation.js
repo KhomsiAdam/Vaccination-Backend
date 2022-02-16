@@ -1,4 +1,5 @@
 const Joi = require('joi');
+/*eslint linebreak-style: ["error", "windows"]*/
 
 // User schema for validation
 const userSchema = Joi.object({
