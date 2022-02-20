@@ -1,5 +1,16 @@
 const Joi = require('joi');
 
+// Login schema for validation
+const loginSchema = Joi.object({
+  email: Joi.string()
+    .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
+    .trim(),
+
+  password: Joi.string()
+    .trim()
+    .min(10),
+});
+
 // User schema for validation
 const userSchema = Joi.object({
   name: Joi.string()
@@ -10,13 +21,15 @@ const userSchema = Joi.object({
     .trim()
     .required(),
 
-  age: Joi.date()
+  age: Joi.number()
     .required(),
 
-  phone: Joi.number()
+  phone: Joi.string()
+    .trim()
     .required(),
 
-  zipCode: Joi.number()
+  zipCode: Joi.string()
+    .trim()
     .required(),
 
   city: Joi.string()
@@ -34,15 +47,14 @@ const userSchema = Joi.object({
 
   email: Joi.string()
     .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
-    .trim()
-    .required(),
+    .trim(),
 
   password: Joi.string()
     .trim()
-    .min(10)
-    .required(),
+    .min(10),
 });
 
 module.exports = {
+  loginSchema,
   userSchema,
 };
