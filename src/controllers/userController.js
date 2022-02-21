@@ -85,17 +85,10 @@ const vaccinVerify = async (req, res) => {
     const getUser = await User.findOne({ cin: req.body.cin });
     if (!getUser) {
       res.json({ message: 'You are not vaccinated.' });
-    } else if (getUser.vaccination === req.body.vaccination) {
-      res.json({
-        message: 'You are already vaccinated.',
-        vaccine: getUser.vaccination,
-        match: true,
-      });
     } else {
       res.json({
         message: 'You are already vaccinated.',
         vaccine: getUser.vaccination,
-        match: false,
       });
     }
   } catch (err) {

@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
 const Admin = mongoose.Schema({
-  region:{
+  region: {
     type: 'string',
-    required: true
+    required: true,
   },
   email: {
     type: String,
@@ -13,7 +13,7 @@ const Admin = mongoose.Schema({
   password: {
     type: String,
     required: true,
-  }
+  },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Admin', Admin);
