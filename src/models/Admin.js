@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const Admin = mongoose.Schema({
+  region: {
+    type: 'string',
+    required: true,
+  },
   email: {
     type: String,
     required: true,

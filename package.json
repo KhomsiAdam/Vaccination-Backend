@@ -8,6 +8,7 @@
     "dev": "nodemon src",
     "dev:sync": "nodemon src --trace-sync-io",
     "seed": "node src/tasks/seedAdmin.js",
+    "seed:managers": "node src/tasks/seedManagers.js",
     "lint": "eslint src/",
     "lint:fix": "npm run lint -- --fix",
     "test": "mocha src/tests/*.test.js --timeout 10000",

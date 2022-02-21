@@ -43,6 +43,14 @@ const User = new Schema({
     enum:['vaccin1', 'vaccin2','vaccin3']
 
   },
+  appointment:{
+    type: Date,
+
+  },
+  SideEffects :{
+    type: Boolean, 
+    default: false
+  },
   email: {
     type: String,
     trim: true,
