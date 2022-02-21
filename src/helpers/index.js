@@ -1,7 +1,7 @@
 const { logger } = require('./logger');
 const { sendMail } = require('./mail');
 const { setAccessSecret, setRefreshSecret } = require('./secret');
-const { userSchema } = require('./validation');
+const { userSchema, loginSchema } = require('./validation');
 
 module.exports = {
   logger,
@@ -9,4 +9,5 @@ module.exports = {
   setAccessSecret,
   setRefreshSecret,
   userSchema,
+  loginSchema,
 };

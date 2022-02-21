@@ -1,5 +1,3 @@
-/*eslint-disable*/
-
 const express = require('express');
 
 const router = express.Router();
@@ -10,12 +8,12 @@ const { auth } = require('../middlewares');
 // Controllers
 const { userController } = require('../controllers');
 
-
-//create User
+// Create User
 router.post(
-  '/user/new',
+  '/user',
   userController.register,
 );
+
 // Get Users
 router.get(
   '/users',

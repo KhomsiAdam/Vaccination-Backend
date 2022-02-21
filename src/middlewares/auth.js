@@ -1,6 +1,11 @@
 const jwt = require('jsonwebtoken');
 
-const { userSchema, setAccessSecret, setRefreshSecret } = require('../helpers');
+const {
+  userSchema,
+  loginSchema,
+  setAccessSecret,
+  setRefreshSecret,
+} = require('../helpers');
 
 const { Role, Admin, User } = require('../models');
 
@@ -96,6 +101,16 @@ const validateUser = (defaultErrorMessage = '') => (req, res, next) => {
     next(error);
   }
 };
+const validateLogin = (defaultErrorMessage = '') => (req, res, next) => {
+  const result = loginSchema.validate(req.body);
+  if (!result.error) {
+    next();
+  } else {
+    const error = defaultErrorMessage ? new Error(defaultErrorMessage) : result.error;
+    res.status(422);
+    next(error);
+  }
+};
 
 // Find user with provided credentials
 const findUser = (Model, defaultLoginError, isError, errorCode = 422) => async (req, res, next) => {
@@ -122,6 +137,7 @@ const findUserLogin = (defaultLoginError, isError, errorCode = 422) => async (re
     const fetchedUser = await Role.findOne({
       email: req.body.email,
     }, 'email role');
+    console.log('test');
     if (isError(fetchedUser)) {
       res.status(errorCode);
       next(new Error(defaultLoginError));
@@ -152,6 +168,7 @@ module.exports = {
   isAuth,
   isLoggedIn,
   validateUser,
+  validateLogin,
   findUser,
   findUserLogin,
   generateAccessToken,

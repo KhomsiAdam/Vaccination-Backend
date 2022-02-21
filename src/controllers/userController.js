@@ -1,4 +1,3 @@
-/*eslint-disable*/
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
@@ -80,52 +79,52 @@ const logout = async (res) => {
   res.json({ message: 'User logged out successfully' });
 };
 
-//verify vaccination 
+// Verify vaccination
 const vaccinVerify = async (req, res) => {
   try {
-    const {cin,vaccination} = req.body;
-    
-    const getUser = await  User.findOne({cin:cin});
-if(!getUser)
-{
-    res.json({message:`You are not vaccinated`})
-}else{
-    if(getUser.vaccination == vaccination) {
+    const getUser = await User.findOne({ cin: req.body.cin });
+    if (!getUser) {
+      res.json({ message: 'You are not vaccinated.' });
+    } else if (getUser.vaccination === req.body.vaccination) {
       res.json({
-        message: `you have already vaccinated  :${vaccination}`
-      })
+        message: 'You are already vaccinated.',
+        vaccine: getUser.vaccination,
+        match: true,
+      });
+    } else {
+      res.json({
+        message: 'You are already vaccinated.',
+        vaccine: getUser.vaccination,
+        match: false,
+      });
     }
+  } catch (err) {
+    __log.error(err);
   }
-  // res.json({
-  //   user: getUser
-  // })
-  }catch (err) {
-    console.error(err);
+};
 
-  }
-}
 // Register a user
 const register = async (req, res, next) => {
   try {
-    const hashed = await bcrypt.hash(req.body.password, 12);
-    const { name ,cin ,age ,phone ,zipCode , city, address  ,vaccination ,email  } = req.body;
-    const getAge = (age) => Math.floor((new Date() - new Date(age).getTime()) / 3.15576e+10)
-    
+    // const hashed = await bcrypt.hash(req.body.password, 12);
+    const {
+      name, cin, age, phone, zipCode, city, address, vaccination, email,
+    } = req.body;
     const newUser = new User({
-      name : name,
-      cin : cin,
-      age : getAge(age),
-      phone : phone,
-      zipCode : zipCode,
-      city : city,
-      address : address,
-      vaccination : vaccination,
-      email: email,
-      password: hashed,
+      name,
+      cin,
+      age,
+      phone,
+      zipCode,
+      city,
+      address,
+      vaccination,
+      email,
+      // password: hashed,
     });
     await newUser.save();
     const registeredUser = new Role({
-      email: email,
+      email,
       role: User.modelName,
     });
     await registeredUser.save();
@@ -224,5 +223,5 @@ module.exports = {
   logout,
   updateOne,
   deleteOne,
-  vaccinVerify
+  vaccinVerify,
 };

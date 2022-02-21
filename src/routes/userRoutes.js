@@ -5,41 +5,50 @@ const express = require('express');
 const router = express.Router();
 
 // Middlewares
-// const { auth } = require('../middlewares');
+const { auth } = require('../middlewares');
+
+// Models
+const { User } = require('../models');
 
 // Controllers
 const { userController } = require('../controllers');
 
+// Errors
+const LoginError = 'Unable to login.';
+const registerError = 'User already exists.';
 
-//create User
+// Login
 router.post(
-  '/new',
+  '/login',
+  auth.validateLogin(LoginError),
+  auth.findUserLogin(LoginError, (user) => !user),
+  userController.login,
+);
+
+// Register
+router.post(
+  '/register',
+  auth.validateUser(),
+  auth.findUser(User, registerError, (user) => user, 409),
   userController.register,
 );
-// Get Users
+
+// Refresh token
+router.post(
+  '/refresh',
+  userController.refresh,
+);
+
+// Logout
 router.get(
-  '/all',
-  userController.get,
+  '/logout',
+  userController.logout,
 );
 
 // Get Users
-router.get(
-    '/vaccinVerify',
-    userController.vaccinVerify,
-  );
-
-
-// Update User
-router.patch(
-  '/user/:id',
-//   auth.isAuth('Admin'),
-  userController.updateOne,
-);
-
-// Delete User
-router.delete(
-  '/user/:id',
-  userController.deleteOne,
+router.post(
+  '/verify',
+  userController.vaccinVerify,
 );
 
 module.exports = router;

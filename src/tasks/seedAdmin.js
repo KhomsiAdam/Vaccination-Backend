@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
-const { logger } = require('../helpers');
+const logger = require('../helpers/logger');
 require('dotenv').config();
 
 const { Role, Admin } = require('../models');
