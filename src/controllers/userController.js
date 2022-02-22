@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
+const moment = require('moment');
 const { auth } = require('../middlewares');
 
 const { userSchema, setRefreshSecret } = require('../helpers');
@@ -101,7 +102,18 @@ const register = async (req, res, next) => {
   try {
     // const hashed = await bcrypt.hash(req.body.password, 12);
     const {
-      name, cin, age, phone, zipCode, city, address, vaccination, region, center, email,
+      name,
+      cin,
+      age,
+      phone,
+      zipCode,
+      city,
+      address,
+      vaccination,
+      appointment,
+      region,
+      center,
+      email,
     } = req.body;
     const newUser = new User({
       name,
@@ -112,6 +124,7 @@ const register = async (req, res, next) => {
       city,
       address,
       vaccination,
+      appointment,
       region,
       center,
       email,
@@ -209,25 +222,22 @@ const deleteOne = async (req, res, next) => {
   }
 };
 
-
-//get statistics 
+// Get statistics
 const stats = async (req, res, next) => {
   try {
-    const vaccin1 = await User.countDocuments({vaccination: "vaccin1" }).exec();
-    const vaccin2 = await User.countDocuments({vaccination: "vaccin2" }).exec();
-    const vaccin3 = await User.countDocuments({vaccination: "vaccin3" }).exec();
+    const vaccin1 = await User.countDocuments({ vaccination: 'vaccin1' }).exec();
+    const vaccin2 = await User.countDocuments({ vaccination: 'vaccin2' }).exec();
+    const vaccin3 = await User.countDocuments({ vaccination: 'vaccin3' }).exec();
 
-    res.json({ 
-      vaccin1 ,
+    res.json({
+      vaccin1,
       vaccin2,
-      vaccin3 
-    })
-
-  }catch (error){
+      vaccin3,
+    });
+  } catch (error) {
     next(error);
   }
-}
-
+};
 
 module.exports = {
   get,
@@ -239,5 +249,5 @@ module.exports = {
   updateOne,
   deleteOne,
   vaccinVerify,
-  stats
+  stats,
 };
