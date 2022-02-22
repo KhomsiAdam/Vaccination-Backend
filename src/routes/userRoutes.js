@@ -51,4 +51,9 @@ router.post(
   userController.vaccinVerify,
 );
 
+//get stats vaccination
+router.get(
+  '/stats',userController.stats
+);
+
 module.exports = router;

@@ -207,6 +207,26 @@ const deleteOne = async (req, res, next) => {
   }
 };
 
+
+//get statistics 
+const stats = async (req, res, next) => {
+  try {
+    const vaccin1 = await User.countDocuments({vaccination: "vaccin1" }).exec();
+    const vaccin2 = await User.countDocuments({vaccination: "vaccin2" }).exec();
+    const vaccin3 = await User.countDocuments({vaccination: "vaccin3" }).exec();
+
+    res.json({ 
+      vaccin1 ,
+      vaccin2,
+      vaccin3 
+    })
+
+  }catch (error){
+    next(error);
+  }
+}
+
+
 module.exports = {
   get,
   getOne,
@@ -217,4 +237,5 @@ module.exports = {
   updateOne,
   deleteOne,
   vaccinVerify,
+  stats
 };
