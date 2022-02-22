@@ -43,11 +43,9 @@ const User = new mongoose.Schema({
   },
   region: {
     type: String,
-    required: true,
   },
   center: {
     type: String,
-    required: true,
   },
   appointment: {
     type: Date,
