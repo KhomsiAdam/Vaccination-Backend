@@ -45,6 +45,20 @@ const userSchema = Joi.object({
     .trim()
     .required(),
 
+  region: Joi.string()
+    .trim()
+    .required(),
+
+  center: Joi.string()
+    .trim()
+    .required(),
+
+  appointment: Joi.date()
+    .required(),
+
+  SideEffects: Joi.boolean()
+    .default(false),
+
   email: Joi.string()
     .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
     .trim(),
