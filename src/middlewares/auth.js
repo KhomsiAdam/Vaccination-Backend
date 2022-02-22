@@ -92,6 +92,8 @@ const isLoggedIn = (req, res, next) => {
 
 // User validation
 const validateUser = (defaultErrorMessage = '') => (req, res, next) => {
+  console.log(req.body);
+
   const result = userSchema.validate(req.body);
   if (!result.error) {
     next();

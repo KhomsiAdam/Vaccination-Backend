@@ -7,13 +7,13 @@ const { centerController } = require('../controllers');
 
 // Create User
 router.post(
-  '/new',
+  '/center',
   centerController.add,
 );
 
 // Get Users
-router.get(
-  '/byRegion',
+router.post(
+  '/centers',
   centerController.get,
 );
 

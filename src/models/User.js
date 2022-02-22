@@ -43,9 +43,11 @@ const User = new mongoose.Schema({
   },
   region: {
     type: String,
+    required: true,
   },
   center: {
     type: String,
+    required: true,
   },
   appointment: {
     type: Date,
@@ -59,7 +61,7 @@ const User = new mongoose.Schema({
     trim: true,
     lowercase: true,
     unique: true,
-    required: false,
+    required: true,
     match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address'],
   },
   password: {

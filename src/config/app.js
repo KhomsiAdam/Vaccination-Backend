@@ -47,7 +47,7 @@ app.get('/', (req, res) => {
 // Endpoints
 app.use('/admin', adminRoutes);
 app.use(userRoutes);
-app.use('/center',centerRoutes);
+app.use(centerRoutes);
 
 // Error Handling
 app.use(notFound);
