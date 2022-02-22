@@ -17,7 +17,7 @@ router.post(
 // Get Users
 router.get(
   '/users',
-  auth.isAuth('Admin'),
+  // auth.isAuth('Admin'),
   userController.get,
 );
 

@@ -53,15 +53,15 @@ const userSchema = Joi.object({
     .trim()
     .required(),
 
-  appointment: Joi.date()
-    .required(),
+  appointment: Joi.date(),
 
   SideEffects: Joi.boolean()
     .default(false),
 
   email: Joi.string()
     .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
-    .trim(),
+    .trim()
+    .required(),
 
   password: Joi.string()
     .trim()

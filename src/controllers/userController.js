@@ -101,7 +101,7 @@ const register = async (req, res, next) => {
   try {
     // const hashed = await bcrypt.hash(req.body.password, 12);
     const {
-      name, cin, age, phone, zipCode, city, address, vaccination, email,
+      name, cin, age, phone, zipCode, city, address, vaccination, region, center, email,
     } = req.body;
     const newUser = new User({
       name,
@@ -112,15 +112,17 @@ const register = async (req, res, next) => {
       city,
       address,
       vaccination,
+      region,
+      center,
       email,
       // password: hashed,
     });
     await newUser.save();
-    const registeredUser = new Role({
-      email,
-      role: User.modelName,
-    });
-    await registeredUser.save();
+    // const registeredUser = new Role({
+    //   email,
+    //   role: User.modelName,
+    // });
+    // await registeredUser.save();
     res.json({ message: 'User was created successfully.' });
   } catch (error) {
     res.status(500);
