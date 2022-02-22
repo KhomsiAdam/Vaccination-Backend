@@ -1,3 +1,4 @@
+/*eslint-disable*/
 // Setup the global Winston logger
 global.__log = require('../helpers/logger');
 
@@ -22,7 +23,7 @@ const {
 } = require('../middlewares');
 
 // Routes
-const { userRoutes, adminRoutes } = require('../routes');
+const { userRoutes, adminRoutes ,centerRoutes } = require('../routes');
 
 // Middlewares (use)
 app.use(cors({
@@ -46,6 +47,7 @@ app.get('/', (req, res) => {
 // Endpoints
 app.use('/admin', adminRoutes);
 app.use(userRoutes);
+app.use('/center',centerRoutes);
 
 // Error Handling
 app.use(notFound);
