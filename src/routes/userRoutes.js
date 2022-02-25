@@ -56,4 +56,14 @@ router.get(
   '/stats',userController.stats
 );
 
+//get stats vaccination
+router.post(
+  '/sideeffect',userController.updateEffects
+);
+
+//get stats vaccination
+router.post(
+  '/appoint',userController.getAppointment
+);
+
 module.exports = router;

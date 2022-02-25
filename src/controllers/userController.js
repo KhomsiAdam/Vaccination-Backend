@@ -1,10 +1,9 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-const moment = require('moment');
 const { auth } = require('../middlewares');
 
-const { userSchema, setRefreshSecret } = require('../helpers');
+const { userSchema, setRefreshSecret, sendMail } = require('../helpers');
 
 const { Role, Admin, User } = require('../models');
 
@@ -136,6 +135,7 @@ const register = async (req, res, next) => {
     //   role: User.modelName,
     // });
     // await registeredUser.save();
+    sendMail({ email, appointment });
     res.json({ message: 'User was created successfully.' });
   } catch (error) {
     res.status(500);
@@ -204,6 +204,39 @@ const updateOne = async (req, res, next) => {
   }
 };
 
+// Update side effect
+const updateEffects = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ cin: req.body.cin });
+    if (user) {
+      const updatedUser = { SideEffects: req.body.SideEffects, appointment: req.body.appointment };
+      const response = await User.findOneAndUpdate({ cin: req.body.cin }, {
+        $set: updatedUser,
+      }, { new: true }).select('-password');
+      res.json(response);
+    } else {
+      next({ message: 'No user found.' });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Update side effect
+const getAppointment = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ cin: req.body.cin });
+    if (user) {
+      console.log(user.appointment);
+      res.json(user);
+    } else {
+      next({ message: 'No user found.' });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 // Delete user by id
 const deleteOne = async (req, res, next) => {
   const { id: _id } = req.params;
@@ -250,4 +283,6 @@ module.exports = {
   deleteOne,
   vaccinVerify,
   stats,
+  updateEffects,
+  getAppointment,
 };
