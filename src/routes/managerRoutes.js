@@ -8,18 +8,18 @@ const { auth } = require('../middlewares');
 // Controllers
 const { userController } = require('../controllers');
 
-// Create User
+// Validate user
 router.post(
-  '/manager',
-  auth.isAuth('Admin'),
-  userController.createManager,
+  '/validate/:id',
+  auth.isAuth('Manager'),
+  userController.validate,
 );
 
 // Get Users
 router.get(
   '/users',
-  auth.isAuth('Admin'),
-  userController.get,
+  auth.isAuth('Manager'),
+  userController.getByRegion,
 );
 
 // Get User

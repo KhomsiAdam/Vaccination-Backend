@@ -1,12 +1,20 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-const moment = require('moment');
+const generator = require('generate-password');
 const { auth } = require('../middlewares');
 
-const { userSchema, setRefreshSecret } = require('../helpers');
+const { userSchema, setRefreshSecret, sendMail } = require('../helpers');
 
-const { Role, Admin, User } = require('../models');
+const {
+  Role,
+  Admin,
+  Manager,
+  User,
+  Vaccination,
+} = require('../models');
+
+// Password generator
 
 // User login
 const login = async (req, res, next) => {
@@ -131,12 +139,65 @@ const register = async (req, res, next) => {
       // password: hashed,
     });
     await newUser.save();
-    // const registeredUser = new Role({
-    //   email,
-    //   role: User.modelName,
-    // });
-    // await registeredUser.save();
+    const status = new Vaccination({
+      cin,
+      vaccine1: true,
+    });
+    await status.save();
+    sendMail({ email, appointment });
     res.json({ message: 'User was created successfully.' });
+  } catch (error) {
+    res.status(500);
+    next(error);
+  }
+};
+
+// Create a manager
+const createManager = async (req, res, next) => {
+  const { email, region } = req.body;
+  // Generate a random password
+  const password = generator.generate({
+    length: 10,
+    numbers: true,
+  });
+  console.log(password);
+  // Send email with credentials
+  sendMail({ email, password });
+  // Hash password then create the user
+  bcrypt
+    .hash(password, 12)
+    .then((hashedPw) => {
+      const user = new Manager({
+        email,
+        password: hashedPw,
+        region,
+      });
+      user.save();
+      const registeredUser = new Role({
+        email,
+        role: Manager.modelName,
+      });
+      registeredUser.save();
+      res.json({ message: 'Manager was created successfully.' });
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        // eslint-disable-next-line no-param-reassign
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};
+
+// Validate user vaccination
+const validate = async (req, res, next) => {
+  try {
+    const { id: _id } = req.params;
+    const query = { _id };
+    const response = await User.findOneAndUpdate(query, {
+      $set: { status: 'NotVaccinated' },
+    }, { new: true }).select('-password');
+    res.json(response);
   } catch (error) {
     res.status(500);
     next(error);
@@ -147,6 +208,20 @@ const register = async (req, res, next) => {
 const get = async (req, res, next) => {
   try {
     const result = await User.find().select('-password');
+    if (result && result.length > 0) {
+      res.json(result);
+    } else {
+      res.json({ message: 'No users found.' });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get all users (without passwords)
+const getByRegion = async (req, res, next) => {
+  try {
+    const result = await User.find({ region: req.user.region }).select('-password');
     if (result && result.length > 0) {
       res.json(result);
     } else {
@@ -204,6 +279,65 @@ const updateOne = async (req, res, next) => {
   }
 };
 
+// Update next vaccine
+const updateVaccine = async (req, res, next) => {
+  const { id: _id } = req.params;
+  const query = { _id };
+  try {
+    const updatedUser = { vaccination: req.body.vaccination, appointment: req.body.appointment };
+    const response = await User.findOneAndUpdate(query, {
+      $set: updatedUser,
+    }, { new: true }).select('-password');
+    res.json(response);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Update side effect
+const updateEffects = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ cin: req.body.cin });
+    if (user) {
+      const updatedUser = { SideEffects: req.body.SideEffects, appointment: req.body.appointment };
+      const response = await User.findOneAndUpdate({ cin: req.body.cin }, {
+        $set: updatedUser,
+      }, { new: true }).select('-password');
+      let sideEffectStatus;
+      if (response.vaccination === 'vaccin1') {
+        sideEffectStatus = { sideEffect1: 'true' };
+      } else if (response.vaccination === 'vaccin2') {
+        sideEffectStatus = { sideEffect2: 'true' };
+      }
+      const status = await Vaccination.findOneAndUpdate({ cin: req.body.cin }, {
+        $set: sideEffectStatus,
+      }, { new: true });
+      await status.save();
+      console.log(response);
+      res.json(response);
+    } else {
+      next({ message: 'No user found.' });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Update side effect
+const getAppointment = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ cin: req.body.cin });
+    if (user) {
+      console.log(user.appointment);
+      res.json(user);
+    } else {
+      next({ message: 'No user found.' });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 // Delete user by id
 const deleteOne = async (req, res, next) => {
   const { id: _id } = req.params;
@@ -225,14 +359,14 @@ const deleteOne = async (req, res, next) => {
 // Get statistics
 const stats = async (req, res, next) => {
   try {
-    const vaccin1 = await User.countDocuments({ vaccination: 'vaccin1' }).exec();
-    const vaccin2 = await User.countDocuments({ vaccination: 'vaccin2' }).exec();
-    const vaccin3 = await User.countDocuments({ vaccination: 'vaccin3' }).exec();
+    const vaccine1 = await Vaccination.countDocuments({ vaccine1: true }).exec();
+    const vaccine2 = await Vaccination.countDocuments({ vaccine2: true }).exec();
+    const vaccine3 = await Vaccination.countDocuments({ vaccine3: true }).exec();
 
     res.json({
-      vaccin1,
-      vaccin2,
-      vaccin3,
+      vaccine1,
+      vaccine2,
+      vaccine3,
     });
   } catch (error) {
     next(error);
@@ -250,4 +384,10 @@ module.exports = {
   deleteOne,
   vaccinVerify,
   stats,
+  updateEffects,
+  getAppointment,
+  createManager,
+  validate,
+  getByRegion,
+  updateVaccine,
 };

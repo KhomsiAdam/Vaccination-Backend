@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const Admin = mongoose.Schema({
+const Manager = mongoose.Schema({
   email: {
     type: String,
     required: true,
@@ -10,6 +10,10 @@ const Admin = mongoose.Schema({
     type: String,
     required: true,
   },
+  region: {
+    type: 'string',
+    required: true,
+  },
 }, { timestamps: true });
 
-module.exports = mongoose.model('Admin', Admin);
+module.exports = mongoose.model('Manager', Manager);

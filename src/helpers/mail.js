@@ -3,14 +3,14 @@ const nodemailer = require('nodemailer');
 const Mailgen = require('mailgen');
 
 const mail = {
-  name: 'name',
+  name: 'Vaccination Manager',
   link: 'link',
-  intro: 'intro',
-  instructions: 'instructions',
+  intro: 'Thank you for your participation.',
+  // instructions: 'instructions',
   color: '#22BC66',
   text: 'text',
-  outro: 'outro',
-  subject: 'subject',
+  outro: 'Thank you for trusting us.',
+  subject: 'Vaccination appointment',
 };
 
 // Configure mailgen by setting a theme and your product info
@@ -22,12 +22,18 @@ const mailGenerator = new Mailgen({
   },
 });
 
-const generatedEmail = () => {
+const generatedEmail = (data) => {
+  let contentInstruction;
+  if (data.appointment) {
+    contentInstruction = `Your appointment is planned at: ${data.appointment}`;
+  } else if (data.password) {
+    contentInstruction = `Your password is: ${data.password}`;
+  }
   const content = {
     body: {
       intro: mail.intro,
       action: {
-        instructions: mail.instructions,
+        instructions: contentInstruction,
         button: {
           color: mail.color,
           text: mail.text,
@@ -40,9 +46,9 @@ const generatedEmail = () => {
   return content;
 };
 
-const sendMail = async (email, type) => {
-  const emailBody = mailGenerator.generate(generatedEmail(email));
-  const emailText = mailGenerator.generatePlaintext(generatedEmail(email));
+const sendMail = async (data) => {
+  const emailBody = mailGenerator.generate(generatedEmail(data));
+  const emailText = mailGenerator.generatePlaintext(generatedEmail(data));
 
   const testAccount = await nodemailer.createTestAccount();
 
@@ -58,15 +64,14 @@ const sendMail = async (email, type) => {
 
   const info = await transporter.sendMail({
     from: `"${mail.name}" <${testAccount.user}>`,
-    to: email,
+    to: data.email,
     subject: mail.subject,
     text: emailText,
     html: emailBody,
   });
 
   // __log.debug(`Message sent: ${info.messageId}`);
-  __log.debug(`Emails for delivery trucks of type "${type}" sent.`);
   __log.debug(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
 };
 
-module.exports = sendMail;
+module.exports = { sendMail };

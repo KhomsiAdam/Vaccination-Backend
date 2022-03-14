@@ -7,7 +7,12 @@ const {
   setRefreshSecret,
 } = require('../helpers');
 
-const { Role, Admin, User } = require('../models');
+const {
+  Role,
+  Admin,
+  User,
+  Manager,
+} = require('../models');
 
 // Access Token generation when login
 const generateAccessToken = (user, userRole) => {
@@ -15,6 +20,7 @@ const generateAccessToken = (user, userRole) => {
     _id: user._id,
     email: user.email,
     role: userRole,
+    region: user.region ? user.region : null,
   };
   return jwt.sign(
     payload,
@@ -29,6 +35,7 @@ const generateRefreshToken = (user, userRole) => {
     _id: user._id,
     email: user.email,
     role: userRole,
+    region: user.region ? user.region : null,
   };
   return jwt.sign(
     payload,
@@ -152,6 +159,10 @@ const findUserLogin = (defaultLoginError, isError, errorCode = 422) => async (re
           break;
         case 'User':
           req.user = await User.findOne({ email: req.body.email }, 'email password');
+          next();
+          break;
+        case 'Manager':
+          req.user = await Manager.findOne({ email: req.body.email }, 'email password region');
           next();
           break;
         default:
