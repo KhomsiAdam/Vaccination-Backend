@@ -51,19 +51,24 @@ router.post(
   userController.vaccinVerify,
 );
 
-//get stats vaccination
+// Get user stats
 router.get(
   '/stats',userController.stats
 );
 
-//get stats vaccination
+// Update sideEffects
 router.post(
   '/sideeffect',userController.updateEffects
 );
 
-//get stats vaccination
+// Get appointment
 router.post(
   '/appoint',userController.getAppointment
+);
+
+// Update to next vaccine
+router.post(
+  '/vaccine',userController.updateVaccine
 );
 
 module.exports = router;

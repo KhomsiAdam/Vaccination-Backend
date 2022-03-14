@@ -23,7 +23,7 @@ const {
 } = require('../middlewares');
 
 // Routes
-const { userRoutes, adminRoutes ,centerRoutes } = require('../routes');
+const { userRoutes, adminRoutes, managerRoutes, centerRoutes } = require('../routes');
 
 // Middlewares (use)
 app.use(cors({
@@ -46,6 +46,7 @@ app.get('/', (req, res) => {
 
 // Endpoints
 app.use('/admin', adminRoutes);
+app.use('/manager', managerRoutes);
 app.use(userRoutes);
 app.use(centerRoutes);
 

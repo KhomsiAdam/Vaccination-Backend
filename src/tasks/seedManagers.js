@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const logger = require('../helpers/logger');
 require('dotenv').config();
 
-const { Role, Admin } = require('../models');
+const { Role, Manager } = require('../models');
 
 const {
   DB_USER, DB_PASS, DB_CLUSTER, DB_NAME,
@@ -14,9 +14,9 @@ const DB_URI = `mongodb+srv://${DB_USER}:${DB_PASS}@${DB_CLUSTER}.mongodb.net/${
 const seedManagers = () => {
   mongoose.connect(DB_URI, async () => {
     try {
-      await Admin.collection.drop();
+      await Manager.collection.drop();
       const hashedPassword = await bcrypt.hash('manager123**', 12);
-      const admins = await Admin.create([
+      const admins = await Manager.create([
         {
           region: 'Marrakech-Safi',
           email: 'manager-ms@covid.com',
@@ -32,11 +32,11 @@ const seedManagers = () => {
       await Role.create([
         {
           email: 'manager-ms@covid.com',
-          role: 'Admin',
+          role: 'Manager',
         },
         {
           email: 'manager-cs@covid.com',
-          role: 'Admin',
+          role: 'Manager',
         },
       ]);
       if (admins) {

@@ -1,18 +1,17 @@
 /* eslint-disable no-unused-vars */
 
-const { Centers} = require('../models');
- 
+const { Centers } = require('../models');
+
 // added new center
 const add = async (req, res, next) => {
   try {
     // const hashed = await bcrypt.hash(req.body.password, 12);
     const {
-      center, region
+      center, region,
     } = req.body;
     const newCenter = new Centers({
-      center, 
-      region
- 
+      center,
+      region,
     });
     await newCenter.save();
     res.json({ message: 'Center was created successfully.' });
@@ -25,7 +24,7 @@ const add = async (req, res, next) => {
 // Get all centers (with region)
 const get = async (req, res, next) => {
   try {
-    const result = await Centers.find({region: req.body.region}).select('center');
+    const result = await Centers.find({ region: req.body.region }).select('center');
     if (result && result.length > 0) {
       res.json(result);
     } else {
@@ -36,8 +35,7 @@ const get = async (req, res, next) => {
   }
 };
 
-
 module.exports = {
   get,
- add
+  add,
 };

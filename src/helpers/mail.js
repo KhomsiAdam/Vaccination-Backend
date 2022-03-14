@@ -23,11 +23,17 @@ const mailGenerator = new Mailgen({
 });
 
 const generatedEmail = (data) => {
+  let contentInstruction;
+  if (data.appointment) {
+    contentInstruction = `Your appointment is planned at: ${data.appointment}`;
+  } else if (data.password) {
+    contentInstruction = `Your password is: ${data.password}`;
+  }
   const content = {
     body: {
       intro: mail.intro,
       action: {
-        instructions: `Your appointment is planned at: ${data.appointment}`,
+        instructions: contentInstruction,
         button: {
           color: mail.color,
           text: mail.text,
