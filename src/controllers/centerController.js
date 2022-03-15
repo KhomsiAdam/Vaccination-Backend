@@ -5,13 +5,12 @@ const { Centers } = require('../models');
 // added new center
 const add = async (req, res, next) => {
   try {
-    // const hashed = await bcrypt.hash(req.body.password, 12);
     const {
-      center, region,
+      center,
     } = req.body;
     const newCenter = new Centers({
       center,
-      region,
+      region: req.user.region,
     });
     await newCenter.save();
     res.json({ message: 'Center was created successfully.' });
