@@ -64,6 +64,9 @@ const refresh = async (req, res) => {
     case 'Admin':
       user = await Admin.findOne({ _id: payload._id });
       break;
+    case 'Manager':
+      user = await Manager.findOne({ _id: payload._id });
+      break;
     case 'User':
       user = await User.findOne({ _id: payload._id });
       break;
@@ -82,7 +85,7 @@ const refresh = async (req, res) => {
 };
 
 // Logout user, reset refresh token
-const logout = async (res) => {
+const logout = async (req, res) => {
   // auth.sendRefreshToken(res, '');
   res.clearCookie('rtkn');
   res.json({ message: 'User logged out successfully' });
